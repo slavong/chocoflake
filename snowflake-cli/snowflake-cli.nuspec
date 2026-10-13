@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>snowflake-cli</id>
+    <version>3.29.0</version>
+    <title>Snowflake CLI</title>
+    <authors>Slavo Nagy</authors>
+    <description>Snowflake's command-line interface.</description>
+    <projectUrl>https://github.com/snowflakedb/snowflake-cli</projectUrl>
+    <licenseUrl>https://github.com/snowflakedb/snowflake-cli/blob/main/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <tags>snowflake cli</tags>
+  </metadata>
+</package>
