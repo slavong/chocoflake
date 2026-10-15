@@ -92,15 +92,5 @@ def main():
     # Print ONLY the raw checksum to stdout for PowerShell to capture
     print(checksum)
 
-    # Optional: Automatically propagate to GitHub Actions environment if applicable
-    github_env = os.environ.get("GITHUB_ENV")
-    if github_env:
-        try:
-            with open(github_env, "a") as f:
-                f.write(f"SHA256_CHECKSUM={checksum}\n")
-            print("Successfully propagated SHA256_CHECKSUM to GITHUB_ENV.")
-        except Exception as e:
-            print(f"Warning: Failed to write to GITHUB_ENV: {e}", file=sys.stderr)
-
 if __name__ == "__main__":
     main()
