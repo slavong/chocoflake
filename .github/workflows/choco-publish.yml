@@ -28,5 +28,7 @@ jobs:
 
       - name: Push Chocolatey Package
         working-directory: ./snowflake-cli
-        run: choco push *.nupkg --source https://chocolatey.org
+        run:  |
+          $package = Get-Item *.nupkg | Select-Object -First 1
+          choco push $package.FullName --source https://push.chocolatey.org/
         shell: powershell
