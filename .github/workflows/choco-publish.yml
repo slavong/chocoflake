@@ -43,7 +43,7 @@ jobs:
         working-directory: ./snowflake-cli
         run: |
           # Run the Python script and trim any surrounding whitespace from stdout
-          $checksum = (python check_snowflake_cli.py).Trim()
+          $checksum = (python tools/check_snowflake_cli.py).Trim()
           
           # Write to GITHUB_ENV so it persists for all later steps
           "SHA256_CHECKSUM=$checksum" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
