@@ -52,7 +52,9 @@ jobs:
         shell: powershell
 
       - name: Generate nuspec file for this version
+        working-directory: ./snowflake-cli
         run: (Get-Content snowflake-cli.nuspec -Raw).Replace('x.y.z', $env:CLI_VERSION) | Set-Content snowflake-cli.nuspec
+        shell: powershell
 
       - name: Pack Chocolatey Package
         working-directory: ./snowflake-cli
