@@ -1,0 +1,35 @@
+name: Publish Chocolatey Package
+
+on:
+  push:
+    tags:
+      - 'v*' # Triggers the workflow only when you push a version tag like v1.0.0
+
+jobs:
+  publish:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Chocolatey
+        run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+          iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org'))
+        shell: powershell
+
+      - name: Set Chocolatey API Key
+        run: choco apikey --key ${{ secrets.CHOCO_API_KEY }} --source https://chocolatey.org
+        shell: powershell
+
+      - name: Pack Chocolatey Package
+        working-directory: ./snowflake-cli
+        run: choco pack
+        shell: powershell
+
+      - name: Push Chocolatey Package
+        working-directory: ./snowflake-cli
+        run: choco push *.nupkg --source https://chocolatey.org
+        shell: powershell
