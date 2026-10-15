@@ -14,5 +14,8 @@
     <iconUrl>https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/snowflake/default.svg</iconUrl>
     <packageSourceUrl>https://sfc-repo.snowflakecomputing.com/snowflake-cli/windows_x86_64/x.y.z/snowflake-cli-x.y.z.0-x86_64.msi</packageSourceUrl>
     <releaseNotes>https://docs.snowflake.com/en/release-notes/clients-drivers/snowflake-cli</releaseNotes>
+    <dependencies>
+      <dependency id="python3" />
+    </dependencies>
   </metadata>
 </package>
