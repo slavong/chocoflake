@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>snowflake-cli</id>
-    <version>3.29.0</version>
+    <version>x.y.z</version>
     <title>Snowflake CLI</title>
     <authors>Slavo Nagy</authors>
     <description>Snowflake's command-line interface.</description>
@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <tags>snowflake cli</tags>
     <iconUrl>https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/snowflake/default.svg</iconUrl>
-    <packageSourceUrl>https://sfc-repo.snowflakecomputing.com/snowflake-cli/windows_x86_64/3.29.0/snowflake-cli-3.29.0.0-x86_64.msi</packageSourceUrl>
+    <packageSourceUrl>https://sfc-repo.snowflakecomputing.com/snowflake-cli/windows_x86_64/x.y.z/snowflake-cli-x.y.z.0-x86_64.msi</packageSourceUrl>
     <releaseNotes>https://docs.snowflake.com/en/release-notes/clients-drivers/snowflake-cli</releaseNotes>
   </metadata>
 </package>
