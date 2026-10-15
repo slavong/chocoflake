@@ -1,0 +1,34 @@
+name: Publish Chocolatey Package
+
+on:
+  push:
+    tags:
+      - 'v*' # Triggers the workflow only when you push a version tag like v1.0.0
+
+jobs:
+  publish:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Chocolatey
+        run: choco --version  # should be preinstalled on windows-latest
+        shell: powershell
+
+      - name: Set Chocolatey API Key
+        run: choco apikey --key ${{ secrets.CHOCO_API_KEY }} --source https://chocolatey.org
+        shell: powershell
+
+      - name: Pack Chocolatey Package
+        working-directory: ./snowflake-cli
+        run: choco pack snowflake-cli.nuspec
+        shell: powershell
+
+      - name: Push Chocolatey Package
+        working-directory: ./snowflake-cli
+        run:  |
+          $package = Get-Item *.nupkg | Select-Object -First 1
+          choco push $package.FullName --source https://chocolatey.org/
+        shell: powershell
