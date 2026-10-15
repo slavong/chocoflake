@@ -21,9 +21,49 @@ jobs:
         run: choco apikey --key ${{ secrets.CHOCO_API_KEY }} --source https://chocolatey.org
         shell: powershell
 
+      - name: Extract and Set CLI_VERSION
+        working-directory: ./snowflake-cli
+        run: |
+          if (-not $env:CLI_VERSION) {
+            # Strip the leading 'v' or 'V' from the GitHub ref name (e.g., "v1.2.3" -> "1.2.3")
+            $version = $env:GITHUB_REF_NAME -replace '^[vV]', ''
+            Write-Host "Using version from GitHub tag: $version"
+          } else {
+            $version = $env:CLI_VERSION
+            Write-Host "Using existing CLI_VERSION: $version"
+          }
+          
+          # Write to GITHUB_ENV so it persists for all subsequent steps
+          "CLI_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          
+          Write-Host "Extracted version: $version"
+        shell: powershell
+
+      - name: Fetch and Set SHA256 Checksum
+        working-directory: ./snowflake-cli
+        run: |
+          # Run the Python script and trim any surrounding whitespace from stdout
+          $checksum = (python tools/check_snowflake_cli.py).Trim()
+          
+          # Write to GITHUB_ENV so it persists for all later steps
+          "SHA256_CHECKSUM=$checksum" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          
+          Write-Host "Successfully assigned SHA256_CHECKSUM: $checksum"
+        shell: powershell
+
+      - name: Generate nuspec file for this version
+        working-directory: ./snowflake-cli
+        run: (Get-Content snowflake-cli.nuspec -Raw).Replace('x.y.z', $env:CLI_VERSION) | Set-Content snowflake-cli.nuspec
+        shell: powershell
+
       - name: Pack Chocolatey Package
         working-directory: ./snowflake-cli
-        run: choco pack snowflake-cli.nuspec
+        run:  |
+          $fileName = "snowflake-cli.$env:CLI_VERSION.nuspec"
+          
+          (Get-Content snowflake-cli.nuspec -Raw).Replace('x.y.z', $env:CLI_VERSION) | Set-Content $fileName
+
+          choco pack $fileName
         shell: powershell
 
       - name: Push Chocolatey Package
