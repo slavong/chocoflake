@@ -6,9 +6,13 @@
     <title>Snowflake CLI</title>
     <authors>Slavo Nagy</authors>
     <description>Snowflake's command-line interface.</description>
+    <summary>Snowflake's command line interface includes all commands for managing your Snowflake account objects</summary>
     <projectUrl>https://github.com/snowflakedb/snowflake-cli</projectUrl>
     <licenseUrl>https://github.com/snowflakedb/snowflake-cli/blob/main/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <tags>snowflake cli</tags>
+    <iconUrl>https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/snowflake/default.svg</iconUrl>
+    <packageSourceUrl>https://sfc-repo.snowflakecomputing.com/snowflake-cli/windows_x86_64/3.29.0/snowflake-cli-3.29.0.0-x86_64.msi</packageSourceUrl>
+    <releaseNotes>https://docs.snowflake.com/en/release-notes/clients-drivers/snowflake-cli</releaseNotes>
   </metadata>
 </package>
