@@ -16,8 +16,16 @@ PS> $env:CLI_VERSION = "3.29.0"
 PS> $env:CLI_VERSION = (python tools/get_latest_version.py)
 PS> $env:CLI_VERSION
 
+PS> $env:SHA256_CHECKSUM = (python tools/check_snowflake_cli.py)
+PS> $env:SHA256_CHECKSUM
+
 PS> (Get-Content snowflake-cli.nuspec -Raw).Replace('x.y.z', $env:CLI_VERSION) | Set-Content snowflake-cli.$env:CLI_VERSION.nuspec
 PS> choco pack snowflake-cli.$env:CLI_VERSION.nuspec
+
+PS> cd tools/
+PS> (Get-Content chocolateyInstall.ps1 -Raw).Replace('$env:CLI_VERSION', $env:CLI_VERSION) | Set-Content chocolateyInstall.$env:CLI_VERSION.ps1
+PS> (Get-Content chocolateyInstall.$env:CLI_VERSION.ps1 -Raw).Replace('$env:SHA256_CHECKSUM', $env:SHA256_CHECKSUM) | Set-Content chocolateyInstall.$env:CLI_VERSION.ps1
+PS> cd ..
 
 PS> choco uninstall snowflake-cli --yes
 PS> choco install snowflake-cli --source . --yes --verbose
