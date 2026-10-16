@@ -56,6 +56,13 @@ jobs:
         run: (Get-Content snowflake-cli.nuspec -Raw).Replace('x.y.z', $env:CLI_VERSION) | Set-Content snowflake-cli.nuspec
         shell: powershell
 
+      - name: Generate ps1 script file for this version
+        working-directory: ./snowflake-cli/tools
+        run: |
+          (Get-Content chocolateyInstall.ps1 -Raw).Replace('$env:CLI_VERSION', $env:CLI_VERSION) | Set-Content chocolateyInstall.ps1
+          (Get-Content chocolateyInstall.ps1 -Raw).Replace('$env:SHA256_CHECKSUM', $env:SHA256_CHECKSUM) | Set-Content chocolateyInstall.ps1
+        shell: powershell
+      
       - name: Pack Chocolatey Package
         working-directory: ./snowflake-cli
         run:  |

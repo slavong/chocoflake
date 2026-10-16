@@ -12,13 +12,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <tags>snowflake cli</tags>
     <iconUrl>https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/snowflake/default.svg</iconUrl>
-    <packageSourceUrl>https://sfc-repo.snowflakecomputing.com/snowflake-cli/windows_x86_64/x.y.z/snowflake-cli-x.y.z.0-x86_64.msi</packageSourceUrl>
+    <docsUrl>https://docs.snowflake.com/en/developer-guide/snowflake-cli/command-reference/overview</docsUrl>
+    <projectSourceUrl>https://sfc-repo.snowflakecomputing.com/snowflake-cli/windows_x86_64/x.y.z/snowflake-cli-x.y.z.0-x86_64.msi</projectSourceUrl>
     <releaseNotes>https://docs.snowflake.com/en/release-notes/clients-drivers/snowflake-cli</releaseNotes>
-    <dependencies>
-      <dependency id="python3" version="3.13.16" />
-    </dependencies>
+    <projectSourceUrl>https://github.com/slavong/chocoflake</projectSourceUrl>
   </metadata>
-  <files>
-    <file src="tools\**\*.py" target="tools" />
-  </files>
 </package>
