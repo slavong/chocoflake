@@ -4,10 +4,19 @@
     <id>snowflake-cli</id>
     <version>x.y.z</version>
     <title>Snowflake CLI</title>
-    <authors>Slavo Nagy</authors>
-    <description>Snowflake's command-line interface.</description>
-    <summary>Snowflake's command line interface includes all commands for managing your Snowflake account objects</summary>
-    <projectUrl>https://github.com/snowflakedb/snowflake-cli</projectUrl>
+    <authors>Snowflake Inc.</authors>
+    <description>Snowflake's command-line interface is a unified command-line tool that enables developers to build, test, and deploy applications on Snowflake. It provides seamless integration with Snowflake features such as Snowpark, native apps, stored procedures, and programmatic interaction with your data warehouse directly from your local terminal or CI/CD pipelines.
+Features:
+- Snowpark Development: Easily build, package, and deploy Python, Java, and Scala code (functions and procedures) directly to Snowflake.
+- Native Apps: Initialize, build, and deploy Snowflake Native Apps locally.
+- Streamlined Workflow: Manage database objects, execute SQL queries, and monitor deployments without leaving your command line.
+- Extensible and Fast: Built for modern data engineering and development workflows.
+License: This package and the underlying software are made available under the terms of the Apache License 2.0.
+Notes:
+- This package installs the official Snowflake CLI binary.
+- Requires Python (refer to official Snowflake documentation for specific version compatibility).</description>
+    <summary>Snowflake CLI (snowflake-cli) is an open-source command-line tool that simplifies building, testing, and deploying Snowpark applications, Native Apps, and SQL workloads directly from your terminal or CI/CD pipelines.</summary>
+    <projectUrl>https://docs.snowflake.com/en/developer-guide/snowflake-cli/index</projectUrl>
     <licenseUrl>https://github.com/snowflakedb/snowflake-cli/blob/main/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <tags>snowflake cli</tags>
@@ -16,5 +25,7 @@
     <iconUrl>https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/snowflake/default.svg</iconUrl>
     <releaseNotes>https://docs.snowflake.com/en/release-notes/clients-drivers/snowflake-cli</releaseNotes>
     <packageSourceUrl>https://github.com/slavong/chocoflake</packageSourceUrl>
+    <copyright>Copyright (c) Snowflake Inc.</copyright>
+    <owners>Slavo Nagy</owners>
   </metadata>
 </package>
