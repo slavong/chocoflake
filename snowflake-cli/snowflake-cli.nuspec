@@ -22,7 +22,7 @@ Notes:
     <tags>snowflake cli</tags>
     <projectSourceUrl>https://github.com/snowflakedb/snowflake-cli</projectSourceUrl>
     <docsUrl>https://docs.snowflake.com/en/developer-guide/snowflake-cli/command-reference/overview</docsUrl>
-    <iconUrl>https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/snowflake/default.svg</iconUrl>
+    <iconUrl>https://cdn.jsdelivr.net/gh/slavong/chocoflake@logo/bug-sno-blue.png</iconUrl>
     <releaseNotes>https://docs.snowflake.com/en/release-notes/clients-drivers/snowflake-cli</releaseNotes>
     <packageSourceUrl>https://github.com/slavong/chocoflake</packageSourceUrl>
     <copyright>Copyright (c) Snowflake Inc.</copyright>
