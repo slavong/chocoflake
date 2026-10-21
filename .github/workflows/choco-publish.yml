@@ -79,3 +79,11 @@ jobs:
           $package = Get-Item *.nupkg | Select-Object -First 1
           choco push $package.FullName --source https://chocolatey.org/
         shell: powershell
+
+      - name: Upload to existing release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # ${{ github.ref_name }} automatically evaluates to the tag name (e.g., v1.0.0)
+          gh release upload "${{ github.ref_name }}" snowflake-cli/snowflake-cli.$env:CLI_VERSION.nuspec --clobber
+          gh release upload "${{ github.ref_name }}" snowflake-cli/snowflake-cli.$env:CLI_VERSION.nupkg --clobber
