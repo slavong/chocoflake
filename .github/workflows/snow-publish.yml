@@ -3,7 +3,7 @@ name: Publish Chocolatey Package
 on:
   push:
     tags:
-      - 'v*' # Triggers the workflow only when you push a version tag like v1.0.0
+      - 'v*.*.*-snow' # Triggers the workflow only when you push a version tag like v1.0.0-snow
 
 jobs:
   publish:
@@ -49,11 +49,6 @@ jobs:
           "SHA256_CHECKSUM=$checksum" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
           
           Write-Host "Successfully assigned SHA256_CHECKSUM: $checksum"
-        shell: powershell
-
-      - name: Generate nuspec file for this version
-        working-directory: ./snowflake-cli
-        run: (Get-Content snowflake-cli.nuspec -Raw).Replace('x.y.z', $env:CLI_VERSION) | Set-Content snowflake-cli.nuspec
         shell: powershell
 
       - name: Generate ps1 script file for this version
