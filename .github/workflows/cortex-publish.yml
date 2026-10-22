@@ -1,0 +1,90 @@
+name: Publish Chocolatey Package
+
+on:
+  push:
+    tags:
+      - 'v*.*.*-cortex' # Triggers the workflow only when you push a version tag like v1.0.0-cortex
+
+jobs:
+  publish:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Chocolatey
+        run: choco --version  # should be preinstalled on windows-latest
+        shell: powershell
+
+      - name: Set Chocolatey API Key
+        run: choco apikey --key ${{ secrets.CHOCO_API_KEY }} --source https://chocolatey.org
+        shell: powershell
+
+      - name: Extract and Set CLI_VERSION
+        working-directory: ./snowflake-cortex-code
+        run: |
+          if (-not $env:CLI_VERSION) {
+            # Strip the leading 'v' or 'V' from the GitHub ref name (e.g., "v1.2.3" -> "1.2.3")
+            $version = $env:GITHUB_REF_NAME -replace '^[vV]', ''
+            Write-Host "Using version from GitHub tag: $version"
+          } else {
+            $version = $env:CLI_VERSION
+            Write-Host "Using existing CLI_VERSION: $version"
+          }
+          
+          # Write to GITHUB_ENV so it persists for all subsequent steps
+          "CLI_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          
+          Write-Host "Extracted version: $version"
+        shell: powershell
+
+      - name: Fetch and Set Build, Hash and SHA256 Checksum
+        working-directory: ./snowflake-cortex-code
+        run: |
+          # Run the Python script and trim any surrounding whitespace from stdout
+          $build = (python tools/get_version.py --version $env:CLI_VERSION --return build).Trim()
+          $hash = (python tools/get_version.py --version $env:CLI_VERSION --return hash).Trim()
+          $checksum = (python tools/get_version.py --version $env:CLI_VERSION --return checksum).Trim()
+          
+          # Write to GITHUB_ENV so it persists for all later steps
+          "VER_BUILD=$build" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "VER_HASH=$hash" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "SHA256_CHECKSUM=$checksum" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          
+          Write-Host "Successfully assigned $VER_BUILD: $build, $VER_HASH: $hash, and SHA256_CHECKSUM: $checksum"
+        shell: powershell
+
+      - name: Generate ps1 script file for this version
+        working-directory: ./snowflake-cortex-code/tools
+        run: |
+          (Get-Content chocolateyInstall.ps1 -Raw).Replace('$env:CLI_VERSION', $env:CLI_VERSION) | Set-Content chocolateyInstall.ps1
+          (Get-Content chocolateyInstall.ps1 -Raw).Replace('$env:VER_BUILD', $env:VER_BUILD) | Set-Content chocolateyInstall.ps1
+          (Get-Content chocolateyInstall.ps1 -Raw).Replace('$env:VER_HASH', $env:VER_HASH) | Set-Content chocolateyInstall.ps1
+          (Get-Content chocolateyInstall.ps1 -Raw).Replace('$env:SHA256_CHECKSUM', $env:SHA256_CHECKSUM) | Set-Content chocolateyInstall.ps1
+        shell: powershell
+      
+      - name: Pack Chocolatey Package
+        working-directory: ./snowflake-cortex-code
+        run:  |
+          $fileName = "snowflake-cortex-code.$env:CLI_VERSION.nuspec"
+          
+          (Get-Content snowflake-cortex-code.nuspec -Raw).Replace('x.y.z', $env:CLI_VERSION) | Set-Content $fileName
+
+          choco pack $fileName
+        shell: powershell
+
+      - name: Push Chocolatey Package
+        working-directory: ./snowflake-cortex-code
+        run:  |
+          $package = Get-Item *.nupkg | Select-Object -First 1
+          choco push $package.FullName --source https://chocolatey.org/
+        shell: powershell
+
+      - name: Upload to existing release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # ${{ github.ref_name }} automatically evaluates to the tag name (e.g., v1.0.0)
+          gh release upload "${{ github.ref_name }}" snowflake-cortex-code/snowflake-cortex-code.$env:CLI_VERSION.nuspec --clobber
+          gh release upload "${{ github.ref_name }}" snowflake-cortex-code/snowflake-cortex-code.$env:CLI_VERSION.nupkg --clobber
