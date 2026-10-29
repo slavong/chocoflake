@@ -88,3 +88,4 @@ jobs:
           # ${{ github.ref_name }} automatically evaluates to the tag name (e.g., v1.0.0)
           gh release upload "${{ github.ref_name }}" snowflake-cortex-code/snowflake-cortex-code.$env:CLI_VERSION.nuspec --clobber
           gh release upload "${{ github.ref_name }}" snowflake-cortex-code/snowflake-cortex-code.$env:CLI_VERSION.nupkg --clobber
+        shell: powershell
