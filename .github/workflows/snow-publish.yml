@@ -103,8 +103,10 @@ jobs:
           }
 
           # Check if release already exists
-          gh release view $tag 2>$null
-          if ($LASTEXITCODE -eq 0) {
+          $null = gh release view $tag 2>$null
+          $releaseExists = ($LASTEXITCODE -eq 0)
+          
+          if ($releaseExists) {
             Write-Host "Release $tag already exists. Uploading/overwriting assets..."
             gh release upload $tag $nuspecPath $nupkgPath --clobber
           } else {
