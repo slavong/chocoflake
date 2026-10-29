@@ -3,7 +3,10 @@ name: Publish Chocolatey Package
 on:
   push:
     tags:
-      - 'v*' # Triggers the workflow only when you push a version tag like v1.0.0
+      - 'v*.*.*-snow' # Triggers the workflow only when you push a version tag like v1.0.0-snow
+
+permissions:
+  contents: write
 
 jobs:
   publish:
@@ -26,8 +29,14 @@ jobs:
         run: |
           if (-not $env:CLI_VERSION) {
             # Strip the leading 'v' or 'V' from the GitHub ref name (e.g., "v1.2.3" -> "1.2.3")
-            $version = $env:GITHUB_REF_NAME -replace '^[vV]', ''
-            Write-Host "Using version from GitHub tag: $version"
+            $tag = "${{ github.ref_name }}"
+            if ($tag -match 'v([0-9]+\.[0-9]+\.[0-9]+)') {
+              $version = $matches[1]
+              Write-Host "Using version from GitHub tag: $version"
+            } else {
+              Write-Error "GitHub ref name does not match expected version pattern. Please ensure the tag is in the format vX.Y.Z."
+              exit 1
+            }
           } else {
             $version = $env:CLI_VERSION
             Write-Host "Using existing CLI_VERSION: $version"
@@ -51,11 +60,6 @@ jobs:
           Write-Host "Successfully assigned SHA256_CHECKSUM: $checksum"
         shell: powershell
 
-      - name: Generate nuspec file for this version
-        working-directory: ./snowflake-cli
-        run: (Get-Content snowflake-cli.nuspec -Raw).Replace('x.y.z', $env:CLI_VERSION) | Set-Content snowflake-cli.nuspec
-        shell: powershell
-
       - name: Generate ps1 script file for this version
         working-directory: ./snowflake-cli/tools
         run: |
@@ -66,9 +70,12 @@ jobs:
       - name: Pack Chocolatey Package
         working-directory: ./snowflake-cli
         run:  |
-          $fileName = "snowflake-cli.$env:CLI_VERSION.nuspec"
-          
+          $version = $env:CLI_VERSION.Trim()
+          $fileName = "snowflake-cli.$version.nuspec"
+
           (Get-Content snowflake-cli.nuspec -Raw).Replace('x.y.z', $env:CLI_VERSION) | Set-Content $fileName
+          
+          Get-Content $fileName
 
           choco pack $fileName
         shell: powershell
@@ -80,10 +87,43 @@ jobs:
           choco push $package.FullName --source https://chocolatey.org/
         shell: powershell
 
-      - name: Upload to existing release
+      - name: Create release and upload artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: ./snowflake-cli
         run: |
-          # ${{ github.ref_name }} automatically evaluates to the tag name (e.g., v1.0.0)
-          gh release upload "${{ github.ref_name }}" snowflake-cli/snowflake-cli.$env:CLI_VERSION.nuspec --clobber
-          gh release upload "${{ github.ref_name }}" snowflake-cli/snowflake-cli.$env:CLI_VERSION.nupkg --clobber
+          $tag = "$($env:GITHUB_REF_NAME)"
+          $nuspecPath = "snowflake-cli.$($env:CLI_VERSION.Trim()).nuspec"
+          $nupkgPath  = "snowflake-cli.$($env:CLI_VERSION.Trim()).nupkg"
+          
+          # 1. Prevent PowerShell from abruptly aborting on external command errors
+          $ErrorActionPreference = "Continue"
+          if (Test-Path variable:PSNativeCommandUseErrorActionPreference) {
+              $PSNativeCommandUseErrorActionPreference = $false
+          }
+
+          # Verify files exist locally before attempting upload
+          if (-not (Test-Path $nuspecPath) -or -not (Test-Path $nupkgPath)) {
+            Write-Error "Release artifact files not found!"
+            exit 1
+          }
+          
+          Write-Host "Attempting to upload assets to existing release '$tag'..." -ForegroundColor Cyan
+          gh release upload $tag $nuspecPath $nupkgPath --clobber
+          
+          # 2. Safely capture the exit code even if gh failed
+          $exitCode = $LASTEXITCODE
+          
+          # If upload failed (meaning the release doesn't exist yet), create it
+          if ($exitCode -ne 0) {
+              Write-Host "Release '$tag' does not exist yet. Creating new release..." -ForegroundColor Yellow
+              gh release create $tag $nuspecPath $nupkgPath --title "Release $tag" --generate-notes
+              
+              if ($LASTEXITCODE -ne 0) {
+                  Write-Error "Failed to create GitHub release and upload assets."
+                  exit 1
+              }
+          }
+          
+          Write-Host "Successfully published release and assets!" -ForegroundColor Green
+        shell: powershell

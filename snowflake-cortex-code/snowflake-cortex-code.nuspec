@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+    <metadata>
+        <id>snowflake-cortex-code</id>
+        <version>x.y.z</version>
+        <title>Snowflake Cortex Code CLI</title>
+        <authors>Snowflake Inc.</authors>
+        <description>Installs the native Windows Snowflake Cortex Code CLI (`cortex`), 
+            allowing you to interact with Snowflake Cortex Code from the command line. 
+            For more information, see the [Snowflake Cortex Code CLI documentation](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code-cli).
+        </description>
+        <summary>Official native Windows CLI for Snowflake Cortex Code.</summary>
+        <projectUrl>https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code-cli</projectUrl>
+        <licenseUrl>https://www.snowflake.com/en/legal/terms-of-service/self-service-on-demand-terms-of-service/</licenseUrl>
+        <requireLicenseAcceptance>true</requireLicenseAcceptance>
+        <tags>snowflake cortex cli ai developer tool</tags>
+        <docsUrl>https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code</docsUrl>
+        <iconUrl>https://cdn.jsdelivr.net/gh/slavong/chocoflake@logo/bug-sno-blue.png</iconUrl>
+        <releaseNotes>https://docs.snowflake.com/en/user-guide/cortex-code/changelog</releaseNotes>
+        <packageSourceUrl>https://github.com/slavong/chocoflake</packageSourceUrl>
+        <copyright>Copyright (c) Snowflake Inc.</copyright>
+        <owners>Slavo Nagy</owners>
+    </metadata>
+    <files>
+        <file src="tools\**" target="tools" />
+    </files>
+</package>
