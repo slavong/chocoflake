@@ -102,11 +102,13 @@ jobs:
             exit 1
           }
 
-          # Create release (or clobber existing assets if already created)
-          gh release create $tag `
-            $nuspecPath `
-            $nupkgPath `
-            --title "Release $tag" `
-            --generate-notes `
-            --clobber
+          # Check if release already exists
+          gh release view $tag 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "Release $tag already exists. Uploading/overwriting assets..."
+            gh release upload $tag $nuspecPath $nupkgPath --clobber
+          } else {
+            Write-Host "Creating new release $tag..."
+            gh release create $tag $nuspecPath $nupkgPath --title "Release $tag" --generate-notes
+          }
         shell: powershell
