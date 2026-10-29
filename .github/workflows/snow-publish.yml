@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*.*.*-snow' # Triggers the workflow only when you push a version tag like v1.0.0-snow
 
+permissions:
+  contents: write
+
 jobs:
   publish:
     runs-on: windows-latest
@@ -84,33 +87,26 @@ jobs:
           choco push $package.FullName --source https://chocolatey.org/
         shell: powershell
 
-      - name: Upload Artifacts and Nuspec via PowerShell and GitHub CLI
+      - name: Create release and upload artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: ./snowflake-cli
         run: |
-          $tagName = "${{ github.ref_name }}"
-          
-          # Find all .nupkg and .nuspec files matching the snowflake-cli pattern
-          $files = Get-ChildItem -Path "." -Filter "snowflake-cli.*" | 
-                  Where-Object { $_.Extension -in '.nupkg', '.nuspec' } | 
-                  Select-Object -ExpandProperty FullName
-          
-          if (-not $files) {
-              Write-Error "No .nupkg or .nuspec files found to upload!"
-              exit 1
+          $tag = $env:GITHUB_REF_NAME
+          $nuspecPath = "snowflake-cli.$($env:CLI_VERSION).nuspec"
+          $nupkgPath  = "snowflake-cli.$($env:CLI_VERSION).nupkg"
+
+          # Verify files exist before attempting upload
+          if (-not (Test-Path $nuspecPath) -or -not (Test-Path $nupkgPath)) {
+            Write-Error "Release artifact files not found in /snowflake-cli directory."
+            exit 1
           }
 
-          Write-Host "Found the following files to upload to GitHub Release '$tagName':" -ForegroundColor Cyan
-          $files | ForEach-Object { Write-Host "  - $_" }
-          
-          # Upload all resolved file paths to the release
-          gh release upload $tagName $files --clobber
-          
-          if ($LASTEXITCODE -eq 0) {
-              Write-Host "Successfully uploaded all artifacts to release!" -ForegroundColor Green
-          } else {
-              Write-Error "Failed to upload artifacts."
-              exit 1
-          }
+          # Create release (or clobber existing assets if already created)
+          gh release create $tag `
+            $nuspecPath `
+            $nupkgPath `
+            --title "Release $tag" `
+            --generate-notes `
+            --clobber
         shell: powershell
