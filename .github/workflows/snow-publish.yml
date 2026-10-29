@@ -87,10 +87,15 @@ jobs:
       - name: Upload to new or existing release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: ./snowflake-cli
         run: |
           # github.ref_name contains the exact tag name (e.g., v1.2.18-snow)
           gh release create "${{ github.ref_name }}" \
             ./snowflake-cli.*.nuspec \
+            --title "Release ${{ github.ref_name }}" \
+            --generate-notes \
+            --clobber
+          gh release create "${{ github.ref_name }}" \
             ./snowflake-cli.*.nupkg \
             --title "Release ${{ github.ref_name }}" \
             --generate-notes \
