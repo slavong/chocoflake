@@ -92,25 +92,30 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: ./snowflake-cli
         run: |
-          $tag = $env:GITHUB_REF_NAME
-          $nuspecPath = "snowflake-cli.$($env:CLI_VERSION).nuspec"
-          $nupkgPath  = "snowflake-cli.$($env:CLI_VERSION).nupkg"
-
-          # Verify files exist before attempting upload
+          $tag = "$($env:GITHUB_REF_NAME)"
+          $nuspecPath = "snowflake-cli.$($env:CLI_VERSION.Trim()).nuspec"
+          $nupkgPath  = "snowflake-cli.$($env:CLI_VERSION.Trim()).nupkg"
+          
+          # Verify files exist locally before attempting upload
           if (-not (Test-Path $nuspecPath) -or -not (Test-Path $nupkgPath)) {
-            Write-Error "Release artifact files not found in /snowflake-cli directory."
+            Write-Error "Release artifact files not found!"
             exit 1
           }
-
-          try {
-            $ErrorActionPreference = "Continue"
-            if (Test-Path variable:PSNativeCommandUseErrorActionPreference) {
-              $PSNativeCommandUseErrorActionPreference = $false
-            }
-            Write-Host "Attempting upload for $tag If is already exists, fails and tries to create..."
-            gh release upload $tag $nuspecPath $nupkgPath --clobber
-          } catch {
-            Write-Host "Release $tag not found. Creating new release ..."
-            gh release create $tag $nuspecPath $nupkgPath --title "Release $tag" --generate-notes
+          
+          Write-Host "Checking if GitHub Release '$tag' already exists..." -ForegroundColor Cyan
+          gh release view $tag 2>&1
+          
+          if ($LASTEXITCODE -eq 0) {
+              Write-Host "Release '$tag' found. Uploading/updating assets..." -ForegroundColor Green
+              gh release upload $tag $nuspecPath $nupkgPath --clobber
+          } else {
+              Write-Host "Release '$tag' does not exist. Creating new release and uploading assets..." -ForegroundColor Yellow
+              gh release create $tag $nuspecPath $nupkgPath --title "Release $tag" --generate-notes
           }
+          
+          if ($LASTEXITCODE -ne 0) {
+              Write-Error "Failed to create release or upload assets."
+              exit 1
+          }
+          Write-Host "Successfully completed release and asset upload!" -ForegroundColor Green
         shell: powershell
