@@ -103,10 +103,14 @@ jobs:
           }
 
           try {
-            Write-Host "Release $tag already exists. Uploading/overwriting assets..."
+            $ErrorActionPreference = "Continue"
+            if (Test-Path variable:PSNativeCommandUseErrorActionPreference) {
+              $PSNativeCommandUseErrorActionPreference = $false
+            }
+            Write-Host "Attempting upload for $tag If is already exists, fails and tries to create..."
             gh release upload $tag $nuspecPath $nupkgPath --clobber
           } catch {
-            Write-Host "Creating new release $tag..."
+            Write-Host "Release $tag not found. Creating new release ..."
             gh release create $tag $nuspecPath $nupkgPath --title "Release $tag" --generate-notes
           }
         shell: powershell
