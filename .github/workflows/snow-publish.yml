@@ -84,19 +84,33 @@ jobs:
           choco push $package.FullName --source https://chocolatey.org/
         shell: powershell
 
-      - name: Upload to new or existing release
+      - name: Upload Artifacts and Nuspec via PowerShell and GitHub CLI
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: ./snowflake-cli
         run: |
-          # github.ref_name contains the exact tag name (e.g., v1.2.18-snow)
-          gh release create "${{ github.ref_name }}" \
-            ./snowflake-cli.*.nuspec \
-            --title "Release ${{ github.ref_name }}" \
-            --generate-notes \
-            --clobber
-          gh release create "${{ github.ref_name }}" \
-            ./snowflake-cli.*.nupkg \
-            --title "Release ${{ github.ref_name }}" \
-            --generate-notes \
-            --clobber
+          $tagName = "${{ github.ref_name }}"
+          
+          # Find all .nupkg and .nuspec files matching the snowflake-cli pattern
+          $files = Get-ChildItem -Path "." -Filter "snowflake-cli.*" | 
+                  Where-Object { $_.Extension -in '.nupkg', '.nuspec' } | 
+                  Select-Object -ExpandProperty FullName
+          
+          if (-not $files) {
+              Write-Error "No .nupkg or .nuspec files found to upload!"
+              exit 1
+          }
+
+          Write-Host "Found the following files to upload to GitHub Release '$tagName':" -ForegroundColor Cyan
+          $files | ForEach-Object { Write-Host "  - $_" }
+          
+          # Upload all resolved file paths to the release
+          gh release upload $tagName $files --clobber
+          
+          if ($LASTEXITCODE -eq 0) {
+              Write-Host "Successfully uploaded all artifacts to release!" -ForegroundColor Green
+          } else {
+              Write-Error "Failed to upload artifacts."
+              exit 1
+          }
+        shell: powershell
