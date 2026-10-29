@@ -67,9 +67,21 @@ jobs:
       - name: Pack Chocolatey Package
         working-directory: ./snowflake-cli
         run:  |
-          $fileName = "snowflake-cli.$env:CLI_VERSION.nuspec"
+          $version = $env:CLI_VERSION.Trim()
+          $fileName = "snowflake-cli.$version.nuspec"
           
-          (Get-Content snowflake-cli.nuspec -Raw).Replace('x.y.z', $env:CLI_VERSION) | Set-Content $fileName
+          # Explicitly read with UTF8 encoding to avoid null-byte corruption in PowerShell 5.1
+          $path = "snowflake-cli.nuspec"
+          $content = [System.IO.File]::ReadAllText($path, [System.Text.Encoding]::UTF8)
+          
+          # Replace the placeholder
+          $content = $content.Replace('x.y.z', $version)
+          
+          # Write out cleanly as UTF-8 without BOM
+          $utf8NoBOM = [System.Text.UTF8Encoding]::new($false)
+          [System.IO.File]::WriteAllText($fileName, $content, $utf8NoBOM)
+
+          Write-Host "Successfully generated $fileName. Running choco pack..." -ForegroundColor Cyan
 
           choco pack $fileName
         shell: powershell
