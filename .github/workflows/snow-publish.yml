@@ -26,8 +26,14 @@ jobs:
         run: |
           if (-not $env:CLI_VERSION) {
             # Strip the leading 'v' or 'V' from the GitHub ref name (e.g., "v1.2.3" -> "1.2.3")
-            $version = $env:GITHUB_REF_NAME -replace '^[vV]', ''
-            Write-Host "Using version from GitHub tag: $version"
+            $tag = "${{ github.ref_name }}"
+            if ($tag -match 'v([0-9]+\.[0-9]+\.[0-9]+)') {
+              $version = $matches[1]
+              Write-Host "Using version from GitHub tag: $version"
+            } else {
+              Write-Error "GitHub ref name does not match expected version pattern. Please ensure the tag is in the format vX.Y.Z."
+              exit 1
+            }
           } else {
             $version = $env:CLI_VERSION
             Write-Host "Using existing CLI_VERSION: $version"
