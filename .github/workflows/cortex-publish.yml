@@ -61,7 +61,7 @@ jobs:
           "VER_HASH=$hash" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
           "SHA256_CHECKSUM=$checksum" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
 
-          Write-Host "Successfully assigned $VER_BUILD: $build, $VER_HASH: $hash, and SHA256_CHECKSUM: $checksum"
+          Write-Host "Successfully assigned VER_BUILD: $build, VER_HASH: $hash, and SHA256_CHECKSUM: $checksum"
         shell: powershell
 
       - name: Generate ps1 script file for this version
