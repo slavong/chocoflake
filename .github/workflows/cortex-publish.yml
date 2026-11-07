@@ -3,7 +3,7 @@ name: Publish Chocolatey Package
 on:
   push:
     tags:
-      - 'v*.*.*-cortex' # Triggers the workflow only when you push a version tag like v1.0.0-cortex
+      - "v*.*.*-cortex" # Triggers the workflow only when you push a version tag like v1.0.0-cortex
 
 permissions:
   contents: write
@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Chocolatey
-        run: choco --version  # should be preinstalled on windows-latest
+        run: choco --version # should be preinstalled on windows-latest
         shell: powershell
 
       - name: Set Chocolatey API Key
@@ -25,7 +25,7 @@ jobs:
         shell: powershell
 
       - name: Extract and Set CLI_VERSION
-        working-directory: ./snowflake-cortex-code
+        working-directory: ./cortex-code-cli
         run: |
           if (-not $env:CLI_VERSION) {
             # Strip the leading 'v' or 'V' from the GitHub ref name (e.g., "v1.2.3" -> "1.2.3")
@@ -41,45 +41,45 @@ jobs:
             $version = $env:CLI_VERSION
             Write-Host "Using existing CLI_VERSION: $version"
           }
-          
+
           # Write to GITHUB_ENV so it persists for all subsequent steps
           "CLI_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-          
+
           Write-Host "Extracted version: $version"
         shell: powershell
 
       - name: Fetch and Set Build, Hash and SHA256 Checksum
-        working-directory: ./snowflake-cortex-code
+        working-directory: ./cortex-code-cli
         run: |
           # Run the Python script and trim any surrounding whitespace from stdout
           $build = (python tools/get_version.py --version $env:CLI_VERSION --return build).Trim()
           $hash = (python tools/get_version.py --version $env:CLI_VERSION --return hash).Trim()
           $checksum = (python tools/get_version.py --version $env:CLI_VERSION --return checksum).Trim()
-          
+
           # Write to GITHUB_ENV so it persists for all later steps
           "VER_BUILD=$build" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
           "VER_HASH=$hash" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
           "SHA256_CHECKSUM=$checksum" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-          
+
           Write-Host "Successfully assigned $VER_BUILD: $build, $VER_HASH: $hash, and SHA256_CHECKSUM: $checksum"
         shell: powershell
 
       - name: Generate ps1 script file for this version
-        working-directory: ./snowflake-cortex-code/tools
+        working-directory: ./cortex-code-cli/tools
         run: |
           (Get-Content chocolateyInstall.ps1 -Raw).Replace('$env:CLI_VERSION', $env:CLI_VERSION) | Set-Content chocolateyInstall.ps1
           (Get-Content chocolateyInstall.ps1 -Raw).Replace('$env:VER_BUILD', $env:VER_BUILD) | Set-Content chocolateyInstall.ps1
           (Get-Content chocolateyInstall.ps1 -Raw).Replace('$env:VER_HASH', $env:VER_HASH) | Set-Content chocolateyInstall.ps1
           (Get-Content chocolateyInstall.ps1 -Raw).Replace('$env:SHA256_CHECKSUM', $env:SHA256_CHECKSUM) | Set-Content chocolateyInstall.ps1
         shell: powershell
-      
-      - name: Pack Chocolatey Package
-        working-directory: ./snowflake-cortex-code
-        run:  |
-          $version = $env:CLI_VERSION.Trim()
-          $fileName = "snowflake-cortex-code.$version.nuspec"
 
-          (Get-Content snowflake-cortex-code.nuspec -Raw).Replace('x.y.z', $version) | Set-Content $fileName
+      - name: Pack Chocolatey Package
+        working-directory: ./cortex-code-cli
+        run: |
+          $version = $env:CLI_VERSION.Trim()
+          $fileName = "cortex-code-cli.$version.nuspec"
+
+          (Get-Content cortex-code-cli.nuspec -Raw).Replace('x.y.z', $version) | Set-Content $fileName
 
           Get-Content $fileName
 
@@ -87,8 +87,8 @@ jobs:
         shell: powershell
 
       - name: Push Chocolatey Package
-        working-directory: ./snowflake-cortex-code
-        run:  |
+        working-directory: ./cortex-code-cli
+        run: |
           $package = Get-Item *.nupkg | Select-Object -First 1
           choco push $package.FullName --source https://chocolatey.org/
         shell: powershell
@@ -96,12 +96,12 @@ jobs:
       - name: Create release and upload artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        working-directory: ./snowflake-cortex-code
+        working-directory: ./cortex-code-cli
         run: |
           $tag = "$($env:GITHUB_REF_NAME)"
-          $nuspecPath = "snowflake-cortex-code.$($env:CLI_VERSION.Trim()).nuspec"
-          $nupkgPath  = "snowflake-cortex-code.$($env:CLI_VERSION.Trim()).nupkg"
-          
+          $nuspecPath = "cortex-code-cli.$($env:CLI_VERSION.Trim()).nuspec"
+          $nupkgPath  = "cortex-code-cli.$($env:CLI_VERSION.Trim()).nupkg"
+
           # 1. Prevent PowerShell from abruptly aborting on external command errors
           $ErrorActionPreference = "Continue"
           if (Test-Path variable:PSNativeCommandUseErrorActionPreference) {
@@ -113,13 +113,13 @@ jobs:
             Write-Error "Release artifact files not found!"
             exit 1
           }
-          
+
           Write-Host "Attempting to upload assets to existing release '$tag'..." -ForegroundColor Cyan
           gh release upload $tag $nuspecPath $nupkgPath --clobber
-          
+
           # 2. Safely capture the exit code even if gh failed
           $exitCode = $LASTEXITCODE
-          
+
           # If upload failed (meaning the release doesn't exist yet), create it
           if ($exitCode -ne 0) {
               Write-Host "Release '$tag' does not exist yet. Creating new release..." -ForegroundColor Yellow
@@ -130,6 +130,6 @@ jobs:
                   exit 1
               }
           }
-          
+
           Write-Host "Successfully published release and assets!" -ForegroundColor Green
         shell: powershell
