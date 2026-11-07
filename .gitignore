@@ -1,3 +1,5 @@
-*.nupkg
-snowflake-cli/snowflake-cli.*.nuspec
-snowflake-cli/tools/chocolateyInstall.*.ps1
+**/*.nupkg
+snowflake-**/snowflake-*.*.nuspec
+snowflake-**/tools/chocolateyInstall.*.ps1
+cortex-**/cortex-**.*.nuspec
+cortex-**/tools/chocolateyInstall.*.ps1
