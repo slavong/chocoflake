@@ -14,7 +14,7 @@ $url = "https://sfc-repo.snowflakecomputing.com/cortex-code-cli/windows_amd64/$d
 Write-Host "Installing Snowflake Cortex Code version $version..."
 
 Install-ChocolateyPackage `
-  -PackageName 'snowflake-cortex-code' `
+  -PackageName 'cortex-code-cli' `
   -FileType 'msi' `
   -SilentArgs '/qn /norestart' `
   -Url $url `

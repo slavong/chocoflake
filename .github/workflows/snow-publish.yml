@@ -73,7 +73,7 @@ jobs:
           $version = $env:CLI_VERSION.Trim()
           $fileName = "snowflake-cli.$version.nuspec"
 
-          (Get-Content snowflake-cli.nuspec -Raw).Replace('x.y.z', $env:CLI_VERSION) | Set-Content $fileName
+          (Get-Content snowflake-cli.nuspec -Raw).Replace('x.y.z', $version) | Set-Content $fileName
           
           Get-Content $fileName
 
