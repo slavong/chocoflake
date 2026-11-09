@@ -249,14 +249,14 @@ def get_msi_info(full_version: str) -> Dict[str, str]:
 
         if checksum_match:
             checksum = checksum_match.group(0).lower()
-            print("SHA256 source: Snowflake repository index")
+            #print("SHA256 source: Snowflake repository index")
         else:
-            print(
+            """print(
                 f"SHA256 unavailable in index. "
                 f"Downloading {file_name} to calculate it..."
-            )
+            )"""
             checksum = calculate_sha256(file_url)
-            print("SHA256 source: calculated from downloaded MSI")
+            #print("SHA256 source: calculated from downloaded MSI")
 
         return {
             "file_name": file_name,
