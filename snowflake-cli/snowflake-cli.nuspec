@@ -5,16 +5,22 @@
       <version>x.y.z</version>
       <title>Snowflake CLI</title>
       <authors>Snowflake Inc.</authors>
-      <description>Snowflake's command-line interface is a unified command-line tool that enables developers to build, test, and deploy applications on Snowflake. It provides seamless integration with Snowflake features such as Snowpark, native apps, stored procedures, and programmatic interaction with your data warehouse directly from your local terminal or CI/CD pipelines.
+      <description>Snowflake's command-line interface is a unified command-line tool that enables developers to build, 
+      test, and deploy applications on Snowflake. 
+      It provides seamless integration with Snowflake features such as Snowpark, native apps, stored procedures, 
+      and programmatic interaction with your data warehouse directly from your local terminal or CI/CD pipelines.
+      IMPORTANT: Snowflake account is needed to use this CLI.
 </description>
-      <summary>Snowflake CLI (snowflake-cli) is an open-source command-line tool that simplifies building, testing, and deploying Snowpark applications, Native Apps, and SQL workloads directly from your terminal or CI/CD pipelines.</summary>
+      <summary>Snowflake CLI (snowflake-cli) is an open-source command-line tool that simplifies building,
+       testing, and deploying Snowpark applications, Native Apps, and SQL workloads directly from your terminal
+       or CI/CD pipelines.</summary>
       <projectUrl>https://docs.snowflake.com/en/developer-guide/snowflake-cli/index</projectUrl>
       <licenseUrl>https://github.com/snowflakedb/snowflake-cli/blob/main/LICENSE</licenseUrl>
       <requireLicenseAcceptance>false</requireLicenseAcceptance>
       <tags>snowflake cli</tags>
       <projectSourceUrl>https://github.com/snowflakedb/snowflake-cli</projectSourceUrl>
       <docsUrl>https://docs.snowflake.com/en/developer-guide/snowflake-cli/command-reference/overview</docsUrl>
-      <iconUrl>https://cdn.jsdelivr.net/gh/slavong/chocoflake@logo/bug-sno-blue.png</iconUrl>
+      <iconUrl>https://cdn.jsdelivr.net/gh/slavong/chocoflake@b8905e3bb79aa3c4c6f5b6a1ede5f6f1467df621/bug-sno-blue.png</iconUrl>
       <releaseNotes>https://docs.snowflake.com/en/release-notes/clients-drivers/snowflake-cli</releaseNotes>
       <packageSourceUrl>https://github.com/slavong/chocoflake</packageSourceUrl>
       <copyright>Copyright (c) Snowflake Inc.</copyright>
