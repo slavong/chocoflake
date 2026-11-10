@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+    <metadata>
+        <id>snowflake-odbc-driver</id>
+        <version>x.y.z</version>
+        <title>Snowflake ODBC Driver</title>
+        <authors>Snowflake Inc.</authors>
+        <description>Installs the native Windows Snowflake ODBC driver, 
+            allowing you to connect to Snowflake from ODBC-compliant applications.
+            IMPORTANT: Snowflake account is needed to use this driver.
+            For more information, see the [Snowflake ODBC Driver documentation](https://docs.snowflake.com/en/developer-guide/odbc/odbc).
+        </description>
+        <summary>Official native Windows Snowflake ODBC driver.</summary>
+        <projectUrl></projectUrl>
+        <licenseUrl>https://www.snowflake.com/en/legal/terms-of-service/self-service-on-demand-terms-of-service/</licenseUrl>
+        <requireLicenseAcceptance>true</requireLicenseAcceptance>
+        <tags>snowflake cortex cli ai developer tool</tags>
+        <docsUrl>https://docs.snowflake.com/en/developer-guide/odbc/odbc</docsUrl>
+        <iconUrl>https://cdn.jsdelivr.net/gh/slavong/chocoflake@b8905e3bb79aa3c4c6f5b6a1ede5f6f1467df621/bug-sno-blue.png</iconUrl>
+        <releaseNotes>https://docs.snowflake.com/en/release-notes/clients-drivers/odbc</releaseNotes>
+        <packageSourceUrl>https://github.com/slavong/chocoflake/tree/main/snowflake-odbc-driver</packageSourceUrl>
+        <copyright>Copyright (c) Snowflake Inc.</copyright>
+        <owners>Slavo Nagy</owners>
+    </metadata>
+    <files>
+        <file src="tools\**" target="tools" />
+    </files>
+</package>

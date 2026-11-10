@@ -1,4 +1,4 @@
-name: Publish Chocolatey Package
+name: Publish Chocolatey Package for Snowflake CLI
 
 on:
   push:

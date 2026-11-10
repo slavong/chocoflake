@@ -18,7 +18,7 @@
         <docsUrl>https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code</docsUrl>
         <iconUrl>https://cdn.jsdelivr.net/gh/slavong/chocoflake@1eabcec61e04c3499cc349334c936f2ade0a8a1b/cortex-code-cli.png</iconUrl>
         <releaseNotes>https://docs.snowflake.com/en/user-guide/cortex-code/changelog</releaseNotes>
-        <packageSourceUrl>https://github.com/slavong/chocoflake</packageSourceUrl>
+        <packageSourceUrl>https://github.com/slavong/chocoflake/tree/main/cortex-code-cli</packageSourceUrl>
         <copyright>Copyright (c) Snowflake Inc.</copyright>
         <owners>Slavo Nagy</owners>
     </metadata>
