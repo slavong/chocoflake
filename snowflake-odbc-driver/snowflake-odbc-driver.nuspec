@@ -11,7 +11,8 @@
             For more information, see the [Snowflake ODBC Driver documentation](https://docs.snowflake.com/en/developer-guide/odbc/odbc).
         </description>
         <summary>Official native Windows Snowflake ODBC driver.</summary>
-        <projectUrl></projectUrl>
+        <projectUrl>https://docs.snowflake.com/en/developer-guide/odbc/odbc</projectUrl>
+        <projectSourceUrl>https://github.com/snowflakedb/drivers/tree/main/odbc</projectSourceUrl>
         <licenseUrl>https://www.snowflake.com/en/legal/terms-of-service/self-service-on-demand-terms-of-service/</licenseUrl>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <tags>snowflake cortex cli ai developer tool</tags>
