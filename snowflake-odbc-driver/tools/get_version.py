@@ -118,9 +118,20 @@ def fetch_text(url: str) -> str:
         url,
         headers={"User-Agent": USER_AGENT}
     )
+    try:
+        with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
+            return response.read().decode("utf-8")
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            raise RuntimeError(f"Resource not found (404): {url}")
+        raise RuntimeError(f"HTTP Error {e.code}: {e.reason} for {url}")
+    except urllib.error.URLError as e:
+        raise RuntimeError(f"Network error: {e.reason}")
 
-    with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
-        return response.read().decode("utf-8")
+
+def fetch_url(url: str) -> str:
+    """Fetch URL and return HTML/text content."""
+    return fetch_text(url)  # Reuse fetch_text to avoid code duplication
 
     
 from html.parser import HTMLParser
@@ -260,14 +271,11 @@ def get_msi_info(full_version: str) -> Dict[str, str]:
 
 def get_version_info(version: str) -> Dict[str, Optional[str]]:
 
-    # Resolve version dynamically from repository index
-    full_version = resolve_full_version(version)
-
     # Retrieve MSI filename and SHA256
-    package = get_msi_info(full_version)
+    package = get_msi_info(version)
 
     return {
-        "version": full_version,
+        "version": version,
         "checksum": package["checksum"],
         "file_name": package["file_name"],
         "platform": "win64",
@@ -302,7 +310,11 @@ def main():
 
     args = parser.parse_args()
 
-    data = get_version_info(args.version)
+    try:
+        data = get_version_info(args.version)
+    except RuntimeError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
 
     if args.field:
 
