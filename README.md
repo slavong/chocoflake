@@ -1,107 +1,37 @@
 # chocoflake
-chocolatey packages for snowflake tools
 
-# Chocolatey
-Using the latest available [chocolatey](https://chocolatey.org/) version 2.7.4 and Powershell version 7.6.6.
+Chocolatey packages for Snowflake tools.
 
-# How to build Snowflake CLI
+## Packages
 
-Run Powershell as Administrator
+- [Snowflake CLI](snowflake-cli/README.md) — [Chocolatey package](https://community.chocolatey.org/packages/snowflake-cli)
+- [Cortex Code CLI](cortex-code-cli/README.md) — [Chocolatey package](https://community.chocolatey.org/packages/cortex-code-cli)
+- [Snowflake ODBC Driver](snowflake-odbc-driver/README.md) — [Chocolatey package](https://community.chocolatey.org/packages/snowflake-odbc-driver)
 
-```powershell
-PS> cd <REPOSITORY_FOLDER>
-PS> cd .\snowflake-cli\  
+## Install a package
 
-PS> $env:CLI_VERSION = "3.29.0"
-PS> $env:CLI_VERSION = (python tools/get_latest_version.py)
-PS> $env:CLI_VERSION
-
-PS> $env:SHA256_CHECKSUM = (python tools/check_snowflake_cli.py)
-PS> $env:SHA256_CHECKSUM
-
-PS> (Get-Content snowflake-cli.nuspec -Raw).Replace('x.y.z', $env:CLI_VERSION) | Set-Content snowflake-cli.$env:CLI_VERSION.nuspec
-
-PS> cd tools/
-PS> (Get-Content chocolateyInstall.ps1 -Raw).Replace('$env:CLI_VERSION', $env:CLI_VERSION) | Set-Content chocolateyInstall.$env:CLI_VERSION.ps1
-PS> (Get-Content chocolateyInstall.$env:CLI_VERSION.ps1 -Raw).Replace('$env:SHA256_CHECKSUM', $env:SHA256_CHECKSUM) | Set-Content chocolateyInstall.$env:CLI_VERSION.ps1
-PS> cd ..
-
-PS> choco pack snowflake-cli.$env:CLI_VERSION.nuspec
-
-PS> choco uninstall snowflake-cli --yes
-PS> choco install snowflake-cli --source . --yes --verbose
-
-PS> $env:YOUR_API_KEY = <YOUR_API_KEY>
-PS> choco apikey --key $env:YOUR_API_KEY --source https://chocolatey.org
- 
-PS> choco push snowflake-cli.$env:CLI_VERSION.nupkg --source https://chocolatey.org
-```
-
-Review comments at https://community.chocolatey.org/packages/snowflake-cli/<version>
-
-To trigger GitHub Actions script in this repository, tag the version
-```bash
-$ export version="3.29.0"
-$ git tag v"$version"
-$ git push origin v"$version"
-```
-
-Users can then install snowflake-cli using
-```powershell
-PS> $env:CLI_VERSION = "3.29.0"
-PS> choco install snowflake-cli --version $env:CLI_VERSION --source https://chocolatey.org
-```
-
-
-# How to build Cortex Code CLI
-
-Run Powershell as Administrator
+Install [Chocolatey](https://chocolatey.org/install) first if it is not already installed. Open PowerShell as Administrator, then install the package by its Chocolatey ID:
 
 ```powershell
-PS> cd <REPOSITORY_FOLDER>
-PS> cd .\cortex-code-cli\
-
-PS> $env:CLI_VERSION = "1.2.35"
-PS> $env:CLI_VERSION
-
-PS> $env:VER_BUILD = (python tools/get_version.py -v $env:CLI_VERSION -r build)
-PS> $env:VER_BUILD
-PS> $env:VER_HASH = (python tools/get_version.py -v $env:CLI_VERSION -r hash)
-PS> $env:VER_HASH
-PS> $env:SHA256_CHECKSUM = (python tools/get_version.py -v $env:CLI_VERSION -r checksum)
-PS> $env:SHA256_CHECKSUM
-
-PS> (Get-Content cortex-code-cli.nuspec -Raw).Replace('x.y.z', $env:CLI_VERSION) | Set-Content cortex-code-cli.$env:CLI_VERSION.nuspec
-
-PS> cd tools/
-PS> (Get-Content chocolateyInstall.ps1 -Raw).Replace('$env:CLI_VERSION', $env:CLI_VERSION) | Set-Content chocolateyInstall.$env:CLI_VERSION.ps1
-PS> (Get-Content chocolateyInstall.$env:CLI_VERSION.ps1 -Raw).Replace('$env:VER_BUILD', $env:VER_BUILD) | Set-Content chocolateyInstall.$env:CLI_VERSION.ps1
-PS> (Get-Content chocolateyInstall.$env:CLI_VERSION.ps1 -Raw).Replace('$env:VER_HASH', $env:VER_HASH) | Set-Content chocolateyInstall.$env:CLI_VERSION.ps1
-PS> (Get-Content chocolateyInstall.$env:CLI_VERSION.ps1 -Raw).Replace('$env:SHA256_CHECKSUM', $env:SHA256_CHECKSUM) | Set-Content chocolateyInstall.$env:CLI_VERSION.ps1
-PS> cd ..
-
-PS> choco pack cortex-code-cli.$env:CLI_VERSION.nuspec
-
-PS> choco uninstall cortex-code-cli --yes
-PS> choco install cortex-code-cli --source . --yes --verbose
-
-PS> $env:YOUR_API_KEY = <YOUR_API_KEY>
-PS> choco apikey --key $env:YOUR_API_KEY --source https://chocolatey.org
- 
-PS> choco push cortex-code-cli.$env:CLI_VERSION.nupkg --source https://chocolatey.org
+choco install snowflake-cli
+choco install cortex-code-cli
+choco install snowflake-odbc-driver
 ```
 
-Review comments at https://community.chocolatey.org/packages/cortex-code-cli/<version>
+Run only the command for the package you want. To install a specific version, add `--version <VERSION>` (for example, `choco install snowflake-cli --version 3.29.0`). Visit the linked Chocolatey package pages above to see available versions and package details.
 
-To trigger GitHub Actions script in this repository, tag the version
-```bash
-$ export version="1.2.35"
-$ git tag v"$version"
-$ git push origin v"$version"
-```
+## Check upstream versions
 
-Users can then install cortex-code-cli using
-```powershell
-PS> $env:CLI_VERSION = "1.2.35"
-PS> choco install cortex-code-cli --version $env:CLI_VERSION --source https://chocolatey.org
-```
+Before updating a package, check Snowflake's official download indexes for the latest available upstream version and installer files:
+
+| Tool | Snowflake download index |
+| --- | --- |
+| Snowflake CLI (Windows x86_64) | [snowflake-cli/windows_x86_64](https://sfc-repo.snowflakecomputing.com/snowflake-cli/windows_x86_64/) |
+| Cortex Code CLI (Windows AMD64) | [cortex-code-cli/windows_amd64](https://sfc-repo.snowflakecomputing.com/cortex-code-cli/windows_amd64/) |
+| Snowflake ODBC Driver (Windows 64-bit) | [odbc/win64](https://sfc-repo.snowflakecomputing.com/odbc/win64/) |
+
+These are the upstream indexes used by the package version/checksum helper scripts. Check the corresponding [Chocolatey package pages](#packages) as well to confirm which versions have been published for installation.
+
+## Build environment
+
+The package build instructions use Chocolatey 2.7.4 and PowerShell 7.6.6.
