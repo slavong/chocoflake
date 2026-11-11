@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>snowcd-cli</id>
+    <version>x.y.z</version>
+    <title>Snowflake SnowCD</title>
+    <authors>Snowflake Inc.</authors>
+    <description>Installs Snowflake's Windows 64-bit SnowCD connectivity diagnostic tool. 
+      SnowCD is end of life and no longer receives updates. 
+      Snowflake recommends using the snow connection test command in Snowflake CLI to test connectivity.</description>
+    <summary>Snowflake's Windows connectivity diagnostic tool (end of life).</summary>
+    <projectUrl>https://docs.snowflake.com/en/user-guide/snowcd</projectUrl>
+    <licenseUrl>https://www.snowflake.com/en/legal/terms-of-service/self-service-on-demand-terms-of-service/</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <tags>snowflake snowcd connectivity diagnostic</tags>
+    <docsUrl>https://docs.snowflake.com/en/user-guide/snowcd</docsUrl>
+    <iconUrl>https://cdn.jsdelivr.net/gh/slavong/chocoflake@b8905e3bb79aa3c4c6f5b6a1ede5f6f1467df621/bug-sno-blue.png</iconUrl>
+    <releaseNotes>https://docs.snowflake.com/en/user-guide/snowcd</releaseNotes>
+    <packageSourceUrl>https://github.com/slavong/chocoflake/tree/main/snowcd-cli</packageSourceUrl>
+    <copyright>Copyright (c) Snowflake Inc.</copyright>
+    <owners>Slavo Nagy</owners>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>

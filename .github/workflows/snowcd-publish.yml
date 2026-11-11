@@ -1,0 +1,84 @@
+name: Publish Chocolatey Package for SnowCD
+
+on:
+  push:
+    tags:
+      - "v*.*.*-snowcd"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Chocolatey
+        run: choco --version
+        shell: powershell
+
+      - name: Set Chocolatey API Key
+        run: choco apikey --key ${{ secrets.CHOCO_API_KEY }} --source https://chocolatey.org
+        shell: powershell
+
+      - name: Extract and Set SNOWCD_VERSION
+        working-directory: ./snowcd-cli
+        run: |
+          $tag = "${{ github.ref_name }}"
+          if ($tag -match '^v([0-9]+\.[0-9]+\.[0-9]+)-snowcd$') {
+            $version = $matches[1]
+          } else {
+            Write-Error "Tag must use the format vX.Y.Z-snowcd."
+            exit 1
+          }
+
+          "SNOWCD_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          Write-Host "Using SnowCD version: $version"
+        shell: powershell
+
+      - name: Fetch and Set SHA256 Checksum
+        working-directory: ./snowcd-cli
+        run: |
+          $checksum = (python tools/get_version.py --version $env:SNOWCD_VERSION --return checksum).Trim()
+          "SHA256_CHECKSUM=$checksum" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          Write-Host "Retrieved SnowCD MSI checksum."
+        shell: powershell
+
+      - name: Generate package files
+        working-directory: ./snowcd-cli
+        run: |
+          (Get-Content tools\chocolateyInstall.ps1 -Raw).Replace('$env:SNOWCD_VERSION', $env:SNOWCD_VERSION).Replace('$env:SHA256_CHECKSUM', $env:SHA256_CHECKSUM) | Set-Content tools\chocolateyInstall.ps1
+
+          $nuspec = "snowcd-cli.$($env:SNOWCD_VERSION).nuspec"
+          (Get-Content snowcd-cli.nuspec -Raw).Replace('x.y.z', $env:SNOWCD_VERSION) | Set-Content $nuspec
+          Get-Content $nuspec
+        shell: powershell
+
+      - name: Pack and publish Chocolatey package
+        working-directory: ./snowcd-cli
+        run: |
+          choco pack "snowcd-cli.$($env:SNOWCD_VERSION).nuspec"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          choco push "snowcd-cli.$($env:SNOWCD_VERSION).nupkg" --source https://chocolatey.org/
+        shell: powershell
+
+      - name: Attach package files to GitHub release
+        working-directory: ./snowcd-cli
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $ErrorActionPreference = "Continue"
+          if (Test-Path variable:PSNativeCommandUseErrorActionPreference) {
+            $PSNativeCommandUseErrorActionPreference = $false
+          }
+
+          $tag = "${{ github.ref_name }}"
+          gh release upload $tag "snowcd-cli.$($env:SNOWCD_VERSION).nuspec" "snowcd-cli.$($env:SNOWCD_VERSION).nupkg" --clobber
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag "snowcd-cli.$($env:SNOWCD_VERSION).nuspec" "snowcd-cli.$($env:SNOWCD_VERSION).nupkg" --title "Release $tag" --generate-notes
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+        shell: powershell

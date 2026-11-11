@@ -5,6 +5,7 @@ Chocolatey packages for Snowflake tools.
 ## Packages
 
 - [Snowflake CLI](snowflake-cli/README.md) — [Chocolatey package](https://community.chocolatey.org/packages/snowflake-cli)
+- [SnowCD CLI](snowcd-cli/README.md) — [Chocolatey package](https://community.chocolatey.org/packages/snowcd-cli) (end of life)
 - [Cortex Code CLI](cortex-code-cli/README.md) — [Chocolatey package](https://community.chocolatey.org/packages/cortex-code-cli)
 - [Snowflake ODBC Driver](snowflake-odbc-driver/README.md) — [Chocolatey package](https://community.chocolatey.org/packages/snowflake-odbc-driver)
 
@@ -14,6 +15,7 @@ Install [Chocolatey](https://chocolatey.org/install) first if it is not already 
 
 ```powershell
 choco install snowflake-cli
+choco install snowcd-cli
 choco install cortex-code-cli
 choco install snowflake-odbc-driver
 ```
@@ -27,6 +29,7 @@ Before updating a package, check Snowflake's official download indexes for the l
 | Tool | Snowflake download index |
 | --- | --- |
 | Snowflake CLI (Windows x86_64) | [snowflake-cli/windows_x86_64](https://sfc-repo.snowflakecomputing.com/snowflake-cli/windows_x86_64/) |
+| SnowCD CLI (Windows x86_64) | [snowcd/win64](https://sfc-repo.snowflakecomputing.com/snowcd/win64/) |
 | Cortex Code CLI (Windows AMD64) | [cortex-code-cli/windows_amd64](https://sfc-repo.snowflakecomputing.com/cortex-code-cli/windows_amd64/) |
 | Snowflake ODBC Driver (Windows 64-bit) | [odbc/win64](https://sfc-repo.snowflakecomputing.com/odbc/win64/) |
 
